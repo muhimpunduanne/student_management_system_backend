@@ -11,7 +11,7 @@ const register = async ({ email, password }) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  const otpExpiry = new Date(Date.now() + 10 * 60000); // 10 mins
+  const otpExpiry = new Date(Date.now() + 10 * 60000); 
 
   await sendOtp(email, otp);
 
