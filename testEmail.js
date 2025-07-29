@@ -1,8 +1,8 @@
 // testEmail.js
 require('dotenv').config();
-const sendOtp = require('./src/utils/sendOtp'); // adjust path if needed
+const sendOtp = require('./src/utils/sendOtp'); 
 
-const testEmail = 'muhimpunduan@gmail.com';  // <-- Replace with your real email here
+const testEmail = 'muhimpunduan@gmail.com';  
 const testOtp = '123456';
 
 sendOtp(testEmail, testOtp)

@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Verify transporter connection before sending email
+
 transporter.verify((error, success) => {
   if (error) {
     console.error("Error verifying transporter:", error);
@@ -32,6 +32,6 @@ module.exports = async (to, otp) => {
     console.log("OTP email sent successfully");
   } catch (error) {
     console.error("Error sending OTP email:", error);
-    throw error; // Re-throw error so caller can handle it
+    throw error; 
   }
 };
