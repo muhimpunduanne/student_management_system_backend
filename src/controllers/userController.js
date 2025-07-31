@@ -102,19 +102,25 @@ exports.login = async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    // If user is a student, check if profile is complete
+    // For profile completeness check, still check student data if needed
     let requiresProfileUpdate = false;
+
+    let phoneNumber = "";
+    let course = "";
+
     if (user.role === "STUDENT") {
       const student = await prisma.student.findUnique({
         where: { userId: user.id },
       });
 
-      if (
-        !student ||
-        !student.phone ||
-        !student.profilePicture ||
-        !student.course
-      ) {
+      if (student) {
+        phoneNumber = student.phone || "";
+        course = student.course || "";
+
+        if (!phoneNumber || !student.profilePicture || !course) {
+          requiresProfileUpdate = true;
+        }
+      } else {
         requiresProfileUpdate = true;
       }
     }
@@ -122,6 +128,12 @@ exports.login = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       token,
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
+      email: user.email,
+      phoneNumber,
+      course,
+      role: user.role,
       requiresProfileUpdate,
     });
   } catch (error) {
