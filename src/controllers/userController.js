@@ -321,7 +321,7 @@ exports.forgotPassword = async (req, res) => {
       data: { resetToken: token, resetTokenExpiry: expiry },
     });
 
-    const resetLink = `https://sms-sable-one.vercel.app/reset/${token}`; 
+    const resetLink = `http://localhost:3000/reset/${token}`; 
     await sendEmail(email, "Password Reset", `Click to reset your password: ${resetLink}`);
 
     res.status(200).json({ message: "Reset link sent" });

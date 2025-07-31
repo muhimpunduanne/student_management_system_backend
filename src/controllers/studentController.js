@@ -28,7 +28,7 @@ exports.updateStudentProfile = async (req, res) => {
         data: {
           phone,
           course,
-          profilePicture: profilePicture || student.profilePicture, // ✅ correct field
+          profilePicture: profilePicture || student.profilePicture, 
         },
       });
     }
