@@ -1,9 +1,16 @@
-const express = require("express");
-const router = express.Router(); 
+const express = require('express');
+const router = express.Router();
+const authMiddleware = require('../middlewares/authMiddleware');
+const studentController = require('../controllers/studentController');
+const multer = require('multer');
 
-const { updateStudentProfile } = require("../controllers/studentController");
-const authMiddleware = require("../middlewares/authMiddleware");
+const upload = multer({ dest: 'uploads/' });
 
-router.put("/profile", authMiddleware, updateStudentProfile);
+router.put(
+  '/student/profile',
+  authMiddleware,
+  upload.single('profilePicture'), 
+  studentController.updateStudentProfile
+);
 
 module.exports = router;
