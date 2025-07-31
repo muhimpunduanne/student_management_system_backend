@@ -4,22 +4,25 @@ const prisma = new PrismaClient();
 exports.updateStudentProfile = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { phone, course } = req.body;
+    const { phone, courses } = req.body; // courses should be an array of course IDs
     const profilePicture = req.file?.path;
 
+    // Find existing student
     let student = await prisma.student.findUnique({
       where: { userId },
+      include: { courses: true },
     });
 
     if (!student) {
+      if (!profilePicture) {
+        return res.status(400).json({ message: "Profile picture is required" });
+      }
+
       student = await prisma.student.create({
         data: {
           phone,
-          course,
           profilePicture,
-          user: {
-            connect: { id: userId },
-          },
+          user: { connect: { id: userId } },
         },
       });
     } else {
@@ -27,15 +30,45 @@ exports.updateStudentProfile = async (req, res) => {
         where: { userId },
         data: {
           phone,
-          course,
-          profilePicture: profilePicture || student.profilePicture, 
+          profilePicture: profilePicture || student.profilePicture,
         },
       });
     }
 
+    // Update courses: replace all StudentCourse entries for this student
+    if (Array.isArray(courses)) {
+      // Delete existing course links
+      await prisma.studentCourse.deleteMany({
+        where: { studentId: student.id },
+      });
+
+      // Create new course links
+      const courseData = courses.map((courseId) => ({
+        studentId: student.id,
+        courseId,
+      }));
+
+      if (courseData.length > 0) {
+        await prisma.studentCourse.createMany({
+          data: courseData,
+          skipDuplicates: true,
+        });
+      }
+    }
+
+    // Fetch updated student with courses
+    const updatedStudent = await prisma.student.findUnique({
+      where: { userId },
+      include: {
+        courses: {
+          include: { course: true },
+        },
+      },
+    });
+
     res.status(200).json({
       message: "Student profile updated successfully",
-      student,
+      student: updatedStudent,
     });
   } catch (error) {
     console.error("Update Student Error:", error);

@@ -41,7 +41,7 @@ model Student {
   id             String         @id @default(uuid())
   userId         String         @unique
   phone          String
-  profilePicture String
+  profilePicture String         // required field
   enrollmentYear Int            @default(2025)
   status         StudentStatus  @default(ACTIVE)
 
@@ -52,6 +52,7 @@ model Student {
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 }
+
 
 model Course {
   id          String           @id @default(uuid())
