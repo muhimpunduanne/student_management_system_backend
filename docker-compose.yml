@@ -1,0 +1,25 @@
+services:
+  backend:
+    build:
+      context: .
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    restart: always
+    ports:
+      - "5433:5432"  
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Anne@12
+      POSTGRES_DB: student_management_system
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
